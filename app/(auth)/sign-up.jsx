@@ -9,12 +9,15 @@ import { createUser } from '../../lib/appwrite'
 const signUp = () => {
   const [form, setForm] = useState({ email: '', password: '', username: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
   const submit = async () => {
     if (!form.email || !form.password || !form.username) Alert.alert('Error', "Please fill in all fields")
     setIsSubmitting(true)
     try {
       const result = createUser(form.email, form.password, form.username)
+      setUser(result)
+      setIsLoggedIn(true)
       router.replace('/home')
     }
     catch (e) {
