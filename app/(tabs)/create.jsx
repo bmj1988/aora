@@ -6,10 +6,10 @@ import { TouchableOpacity } from 'react-native'
 import { Video, ResizeMode } from 'expo-av'
 import { icons } from '../../constants'
 import CustomButton from '../../components/CustomButton'
-import * as DocumentPicker from 'expo-document-picker'
 import { router } from 'expo-router'
 import { createVideo } from '../../lib/appwrite'
 import { useGlobalContext } from '@/context/GlobalProvider'
+import * as ImagePicker from 'expo-image-picker'
 
 const Create = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
@@ -22,10 +22,12 @@ const Create = () => {
   const [uploading, setUploading] = useState(false)
 
   const openPicker = async (selectType) => {
-    const result = await DocumentPicker.getDocumentAsync(
+    const result = await ImagePicker.launchImageLibraryAsync(
       {
-        type: selectType === 'image' ? ['image/png', 'image/jpg']
-          : ['video/mp4', 'video/gif']
+        mediaTypes: selectType === 'video' ? ImagePicker.MediaTypeOptions.Videos : ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        aspect: [4, 3],
+        quality: 1
       }
     )
     if (!result.canceled) {
@@ -44,7 +46,7 @@ const Create = () => {
   }
 
   const submit = async () => {
-    console.log(form)
+    console.log(form, user)
     if (!form.prompt || !form.title || !form.thumbnail || !form.video) {
       return Alert.alert('Please fill in all the fields')
     }
